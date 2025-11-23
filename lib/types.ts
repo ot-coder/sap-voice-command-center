@@ -1,12 +1,3 @@
-export interface Task {
-  id: string
-  title: string
-  status: "READY" | "COMPLETED" | "IN_PROGRESS"
-  createdAt: string
-  description?: string
-  priority?: "HIGH" | "MEDIUM" | "LOW"
-}
-
 export type IntentType = "LIST_TASKS" | "APPROVE_TASK" | "START_PROJECT" | "UNKNOWN"
 
 export interface ParsedIntent {
@@ -22,3 +13,5 @@ export interface LogEntry {
   message: string
   details?: any
 }
+
+export type { SAPTask } from "./sap-types"

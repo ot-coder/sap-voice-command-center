@@ -4,14 +4,14 @@ import { useState, useEffect, useRef } from "react"
 import { Mic, MicOff, Terminal, Activity, CheckCircle2, Play, Layout, ChevronRight, AlertCircle } from "lucide-react"
 import { fetchTasks, completeTask, startProject } from "@/lib/sap-service"
 import { parseVoiceIntent } from "@/lib/gemini-service"
-import type { Task, LogEntry, ParsedIntent } from "@/lib/types"
+import type { SAPTask, LogEntry, ParsedIntent } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export function VoiceDashboard() {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<SAPTask[]>([])
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [debugMode, setDebugMode] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -126,13 +126,13 @@ export function VoiceDashboard() {
   const handleApproveTask = async (parsed: ParsedIntent) => {
     // Simple fuzzy match for demo purposes
     const task = tasks.find(
-      (t: Task) =>
-        t.title.toLowerCase().includes(parsed.entity?.toLowerCase() || "") ||
+      (t: SAPTask) =>
+        t.subject.toLowerCase().includes(parsed.entity?.toLowerCase() || "") ||
         t.description?.toLowerCase().includes(parsed.entity?.toLowerCase() || ""),
     )
 
     if (task) {
-      addLog("System", `Found task: ${task.title}`)
+      addLog("System", `Found task: ${task.subject}`)
       await completeTask(task.id)
       addLog("SAP", `Approved task ${task.id}`)
       await handleFetchTasks() // Refresh list
@@ -237,7 +237,7 @@ export function VoiceDashboard() {
                   <div key={task.id} className="p-4 hover:bg-slate-50 transition-colors group">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium text-slate-900 mb-1">{task.title}</h4>
+                        <h4 className="font-medium text-slate-900 mb-1">{task.subject}</h4>
                         {task.description && <p className="text-sm text-slate-500 mb-2">{task.description}</p>}
                         <div className="flex gap-2">
                           <span
